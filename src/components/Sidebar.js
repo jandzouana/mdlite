@@ -1,6 +1,20 @@
 import React from "react"
 
 export default function Sidebar(props) {
+
+    function getNoteSummary(note){
+        // const json = JSON.stringify(note);
+        if(note.includes("#")) {
+            const split = note.split("#")[1].split("\n")[0];
+            console.log(split);
+            return split;
+        }
+        else if(note.includes("\n")){
+            return note.split('\n')[0];
+        }
+        else return note;
+    }
+
     const noteElements = props.notes.map((note, index) => (
         <div key={note.id}>
             <div
@@ -10,7 +24,7 @@ export default function Sidebar(props) {
                 }`}
                 onClick={() => props.setCurrentNoteId(note.id)}
             >
-                <h4 className="text-snippet">Note {index + 1}</h4>
+                <h4 className="text-snippet">{!note.body? `Note ${index + 1}` : getNoteSummary(note.body)}</h4>
             </div>
         </div>
     ))
