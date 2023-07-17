@@ -6,7 +6,7 @@ export default function Sidebar(props) {
         // const json = JSON.stringify(note);
         if(note.includes("#")) {
             const split = note.split("#")[1].split("\n")[0];
-            console.log(split);
+            //console.log(split);
             return split;
         }
         else if(note.includes("\n")){
@@ -34,6 +34,7 @@ export default function Sidebar(props) {
             <div className="sidebar--header">
                 <h3>Notes</h3>
                 <button className="new-note" onClick={props.newNote}>+</button>
+                <button className="clear-notes" onClick={props.clearNotes}>Clear</button>
             </div>
             {noteElements}
         </section>

@@ -53,6 +53,16 @@ button:focus {
     width: 30px;
 }
 
+.clear-notes {
+    cursor: pointer;
+    background-color: #4A4E74;
+    border: none;
+    color: white;
+    border-radius: 3px;
+    height: 30px;
+    width: 60px;
+}
+
 .first-note {
     cursor: pointer;
     background-color: #4A4E74;

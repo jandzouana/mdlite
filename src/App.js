@@ -32,12 +32,24 @@ export default function App() {
         setCurrentNoteId(newNote.id)
     }
 
+    function clearNotes(){
+        setNotes([]);
+    }
+
     function updateNote(text) {
-        setNotes(oldNotes => oldNotes.map(oldNote => {
-            return oldNote.id === currentNoteId
-                ? { ...oldNote, body: text }
-                : oldNote
-        }))
+        // This does not rearrange the notes
+        // setNotes(oldNotes => oldNotes.map(oldNote => {
+        //     return oldNote.id === currentNoteId
+        //         ? { ...oldNote, body: text }
+        //         : oldNote
+        // }))
+        setNotes(notes => {
+            // find note
+            const oldNoteIdx = notes.findIndex(note => note.id === currentNoteId);
+            let oldNote = notes.splice(oldNoteIdx, 1)[0];
+            oldNote.body = text;
+            return [oldNote, ...notes];
+        })
     }
 
     function findCurrentNote() {
@@ -63,6 +75,7 @@ export default function App() {
                             currentNote={findCurrentNote()}
                             setCurrentNoteId={setCurrentNoteId}
                             newNote={createNewNote}
+                            clearNotes={clearNotes}
                         />
                         {
                             currentNoteId &&
