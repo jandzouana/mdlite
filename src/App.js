@@ -42,6 +42,8 @@ export default function App() {
                     ?
                     <Split
                         sizes={[30, 70]}
+                        minSize={[200, 0]}
+                        maxSize={[350, Infinity]}
                         direction="horizontal"
                         className="split"
                     >
