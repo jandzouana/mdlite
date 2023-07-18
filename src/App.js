@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react"
 import Sidebar from "./components/Sidebar"
 import Editor from "./components/Editor"
 import Split from "react-split"
-import {nanoid} from "nanoid"
 import "./style.css"
 import favicon from './favicon.ico';
 import { onSnapshot, addDoc, deleteDoc, setDoc, getDocs, doc } from 'firebase/firestore';
@@ -20,6 +19,7 @@ export default function App() {
         notes.find(note => note.id === currentNoteId)
         || notes[0];
 
+    const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt);
 
     React.useEffect(() => {
         if (!currentNoteId) {
@@ -29,7 +29,7 @@ export default function App() {
 
     // Update db in cloud when we make changes to notes
     useEffect(() => {
-        const unsubscribe = onSnapshot(notesCollection, function(snapshot) {
+        return onSnapshot(notesCollection, function(snapshot) {
             // Sync up our local notes array with the snapshot data
             const notesArr = snapshot.docs.map(doc => ({
                 ...doc.data(),
@@ -38,7 +38,6 @@ export default function App() {
             setNotes(notesArr);
             //console.log("Update ", notesArr);
         })
-        return unsubscribe
     }, [])
 
     // Set favicon
@@ -51,7 +50,7 @@ export default function App() {
 
         let localSizes = localStorage.getItem('split-sizes');
         if (localSizes) {
-            console.log("Got sizes: " + localSizes);
+            //console.log("Got sizes: " + localSizes);
             return(JSON.parse(localSizes));
         }
         else {
@@ -61,7 +60,9 @@ export default function App() {
 
     async function createNewNote() {
         const newNote = {
-            body: "# Type your markdown note's title here"
+            body: "# Type your markdown note's title here",
+            createdAt: Date.now(),
+            updatedAt: Date.now()
         };
         setCreatingNote(true);
         const newNoteRef = await addDoc(notesCollection, newNote);
@@ -73,7 +74,6 @@ export default function App() {
     }
 
     async function clearNotes() {
-        const collectionPath = "notes";
         const result = window.confirm("Are you sure you want to delete ALL notes?");
 
         if (result) {
@@ -91,7 +91,7 @@ export default function App() {
         }
     }
 
-    async function deleteNote(id, event){
+    async function deleteNote(id){
         console.log("delete: " + id);
         //event.stopPropagation();
 
@@ -112,11 +112,8 @@ export default function App() {
 
     async function updateNote(text) {
         const docRef = doc(db, "notes", currentNoteId);
-        await setDoc(docRef, { body :  text}, { merge: true });
+        await setDoc(docRef, { body :  text, updatedAt: Date.now()}, { merge: true });
     }
-
-
-
 
     return (
         <main>
@@ -147,7 +144,7 @@ export default function App() {
                         className="split"
                     >
                         <Sidebar
-                            notes={notes}
+                            notes={sortedNotes}
                             currentNote={currentNote}
                             setCurrentNoteId={setCurrentNoteId}
                             newNote={createNewNote}

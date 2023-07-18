@@ -4,9 +4,7 @@ export default function Sidebar(props) {
     function getNoteSummary(note){
         // const json = JSON.stringify(note);
         if(note.includes("#")) {
-            const split = note.split("#")[1].split("\n")[0];
-            //console.log(split);
-            return split;
+            return note.split("#")[1].split("\n")[0];
         }
         else if(note.includes("\n")){
             return note.split('\n')[0];
@@ -22,7 +20,10 @@ export default function Sidebar(props) {
                     note.id === props.currentNote.id ? "selected-note" : ""
                 }`}
                 onClick={() => {
-                    console.log("Setting current id: " + note.id);
+                    console.log("Clicked on note: ", props.currentNote);
+                    const date = new Date(props.currentNote.updatedAt);
+                    console.log(`With time: ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
+
                     props.setCurrentNoteId(note.id);
                 }}
             >
