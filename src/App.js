@@ -5,28 +5,49 @@ import Split from "react-split"
 import {nanoid} from "nanoid"
 import "./style.css"
 import favicon from './favicon.ico';
+import { onSnapshot, addDoc, deleteDoc, setDoc, getDocs, doc } from 'firebase/firestore';
+import { notesCollection, db } from './firebase';
 
 export default function App() {
-    const [notes, setNotes] = useState(() => getSavedNotes() || [])
-    const [currentNoteId, setCurrentNoteId] = useState(
-        (notes[0] && notes[0].id) || ""
-    )
-
+    //console.log("Top");
+    const [creatingNote, setCreatingNote] = useState(false);
+    const [notes, setNotes] = useState([]);
+    const [currentNoteId, setCurrentNoteId] = useState(""
+    );
     const [splitSizes, setSplitSizes] = useState(getSplitSizes());
 
-    // console.log("sizes: " + sizes);
-    // console.log("sizes 2" + localStorage.getItem('split-sizes'));
+    const currentNote =
+        notes.find(note => note.id === currentNoteId)
+        || notes[0];
 
-    useEffect(()=>{
-        localStorage.setItem("notes", JSON.stringify(notes));
+
+    React.useEffect(() => {
+        if (!currentNoteId) {
+            setCurrentNoteId(notes[0]?.id)
+        }
     }, [notes])
 
+    // Update db in cloud when we make changes to notes
+    useEffect(() => {
+        const unsubscribe = onSnapshot(notesCollection, function(snapshot) {
+            // Sync up our local notes array with the snapshot data
+            const notesArr = snapshot.docs.map(doc => ({
+                ...doc.data(),
+                id: doc.id
+            }))
+            setNotes(notesArr);
+            //console.log("Update ", notesArr);
+        })
+        return unsubscribe
+    }, [])
+
+    // Set favicon
     useEffect(()=>{
         document.getElementById("favicon").href = favicon;
     }, [])
 
     function getSplitSizes(){
-        console.log("Getting sizes...");
+        //console.log("Getting sizes...");
 
         let localSizes = localStorage.getItem('split-sizes');
         if (localSizes) {
@@ -38,34 +59,41 @@ export default function App() {
         }
     }
 
-    function getSavedNotes(){
-        const notes = localStorage.getItem("notes");
-        if(notes){
-            return JSON.parse(notes);
-        }
-        return null;
-    }
-
-    function createNewNote() {
+    async function createNewNote() {
         const newNote = {
-            id: nanoid(),
             body: "# Type your markdown note's title here"
-        }
-        setNotes(prevNotes => [newNote, ...prevNotes])
-        setCurrentNoteId(newNote.id)
+        };
+        setCreatingNote(true);
+        const newNoteRef = await addDoc(notesCollection, newNote);
+        // console.log("Wait for 2 seconds...");
+        // await new Promise(resolve => setTimeout(resolve, 2000));
+        // console.log("Done creating note " + newNoteRef.id);
+        setCurrentNoteId(newNoteRef.id);
+        setCreatingNote(false);
     }
 
-    function clearNotes(){
+    async function clearNotes() {
+        const collectionPath = "notes";
         const result = window.confirm("Are you sure you want to delete ALL notes?");
 
         if (result) {
-            setNotes([]);
+            const querySnapshot = await getDocs(notesCollection);
+
+            querySnapshot.forEach((doc) => {
+                deleteDoc(doc.ref)
+                    .then(() => {
+                        console.log(`Document with ID ${doc.id} successfully deleted.`);
+                    })
+                    .catch((error) => {
+                        console.error(`Error deleting document with ID ${doc.id}:`, error);
+                    });
+            });
         }
     }
 
-    function deleteNote(id, event){
+    async function deleteNote(id, event){
         console.log("delete: " + id);
-        event.stopPropagation();
+        //event.stopPropagation();
 
         const result = window.confirm("Delete this note?");
 
@@ -73,12 +101,8 @@ export default function App() {
             // User clicked "Yes"
             // Perform actions for "Yes" response
             console.log("User clicked 'Yes'");
-            setNotes(notes => {
-                const oldNoteIdx = notes.findIndex(note => note.id === id);
-                let newNotes = [...notes];
-                newNotes.splice(oldNoteIdx, 1);
-                return newNotes;
-            })
+            const docRef = doc(db, "notes", id);
+            await deleteDoc(docRef);
         } else {
             // User clicked "No" or closed the dialog
             // Perform actions for "No" or cancelled response
@@ -86,27 +110,13 @@ export default function App() {
         }
     }
 
-    function updateNote(text) {
-        // This does not rearrange the notes
-        // setNotes(oldNotes => oldNotes.map(oldNote => {
-        //     return oldNote.id === currentNoteId
-        //         ? { ...oldNote, body: text }
-        //         : oldNote
-        // }))
-        setNotes(notes => {
-            // find note
-            const oldNoteIdx = notes.findIndex(note => note.id === currentNoteId);
-            let oldNote = notes.splice(oldNoteIdx, 1)[0];
-            oldNote.body = text;
-            return [oldNote, ...notes];
-        })
+    async function updateNote(text) {
+        const docRef = doc(db, "notes", currentNoteId);
+        await setDoc(docRef, { body :  text}, { merge: true });
     }
 
-    function findCurrentNote() {
-        return notes.find(note => {
-            return note.id === currentNoteId
-        }) || notes[0]
-    }
+
+
 
     return (
         <main>
@@ -116,9 +126,20 @@ export default function App() {
                     <Split
                         sizes={splitSizes}
                         onDragEnd={sizes => {
-                            //console.log("Updating sizes: " + sizes);
-                            localStorage.setItem('split-sizes', JSON.stringify(sizes));
-                            setSplitSizes(sizes);
+                            // const temp = [...sizes];
+                            // temp[0] = temp[0].toFixed(10);
+                            // temp[1] = Math.floor(temp[1]);
+
+                            if(sizes[0] !== splitSizes[0] || sizes[1] !== splitSizes[1]) {
+                                console.log("Updating sizes: " + sizes);
+                                localStorage.setItem('split-sizes', JSON.stringify(sizes));
+
+                                setSplitSizes(sizes);
+
+                                // localStorage.setItem('split-sizes', JSON.stringify([30, 70]));
+                                //
+                                // setSplitSizes([30, 70]);
+                            }
                         }}
                         minSize={[200, 0]}
                         maxSize={[350, Infinity]}
@@ -127,20 +148,17 @@ export default function App() {
                     >
                         <Sidebar
                             notes={notes}
-                            currentNote={findCurrentNote()}
+                            currentNote={currentNote}
                             setCurrentNoteId={setCurrentNoteId}
                             newNote={createNewNote}
-                            clearNotes={clearNotes}
                             deleteNote={deleteNote}
+                            clearNotes={clearNotes}
+                            addButtonEnabled={!creatingNote}
                         />
-                        {
-                            currentNoteId &&
-                            notes.length > 0 &&
-                            <Editor
-                                currentNote={findCurrentNote()}
-                                updateNote={updateNote}
-                            />
-                        }
+                        <Editor
+                            currentNote={currentNote}
+                            updateNote={updateNote}
+                        />
                     </Split>
                     :
                     <div className="no-notes">

@@ -1,7 +1,6 @@
 import React from "react"
 
 export default function Sidebar(props) {
-
     function getNoteSummary(note){
         // const json = JSON.stringify(note);
         if(note.includes("#")) {
@@ -22,10 +21,14 @@ export default function Sidebar(props) {
                 className={`title ${
                     note.id === props.currentNote.id ? "selected-note" : ""
                 }`}
-                onClick={() => props.setCurrentNoteId(note.id)}
+                onClick={() => {
+                    console.log("Setting current id: " + note.id);
+                    props.setCurrentNoteId(note.id);
+                }}
             >
                 <h4 className="text-snippet">{!note.body? `Note ${index + 1}` : getNoteSummary(note.body)}</h4>
                 <button
+                    disabled={!props.addButtonEnabled}
                     className={note.id === props.currentNote.id ? "delete-btn selected-delete-btn" : "delete-btn"}
                     onClick={(event)=>props.deleteNote(note.id, event)}
                 >
@@ -40,7 +43,7 @@ export default function Sidebar(props) {
             <section className="pane sidebar">
                 <div className="sidebar--header">
                     <h3 id={"title"}>MD Lite</h3>
-                    <button className="new-note" onClick={props.newNote}>+</button>
+                    <button className={`new-note ${props.addButtonEnabled ? "" : "disabled"}`} disabled={!props.addButtonEnabled} onClick={props.newNote}>+</button>
                 </div>
                 {noteElements}
             </section>

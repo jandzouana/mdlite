@@ -70,6 +70,10 @@ button:focus {
     width: 30px;
 }
 
+.disabled{
+    background: grey;
+}
+
 .clear-notes {
     cursor: pointer;
     /*background-color: #4A4E74;*/
