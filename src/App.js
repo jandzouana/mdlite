@@ -4,6 +4,7 @@ import Editor from "./components/Editor"
 import Split from "react-split"
 import {nanoid} from "nanoid"
 import "./style.css"
+import favicon from './favicon.ico';
 
 export default function App() {
     const [notes, setNotes] = useState(() => getSavedNotes() || [])
@@ -19,6 +20,10 @@ export default function App() {
     useEffect(()=>{
         localStorage.setItem("notes", JSON.stringify(notes));
     }, [notes])
+
+    useEffect(()=>{
+        document.getElementById("favicon").href = favicon;
+    }, [])
 
     function getSplitSizes(){
         console.log("Getting sizes...");
