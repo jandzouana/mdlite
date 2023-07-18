@@ -36,13 +36,16 @@ export default function Sidebar(props) {
     ))
 
     return (
-        <section className="pane sidebar">
-            <div className="sidebar--header">
-                <h3>Notes</h3>
-                <button className="new-note" onClick={props.newNote}>+</button>
-                <button className="clear-notes" onClick={props.clearNotes}>Clear</button>
-            </div>
-            {noteElements}
-        </section>
+        <div className={"sidebar--container"}>
+            <section className="pane sidebar">
+                <div className="sidebar--header">
+                    <h3 id={"title"}>MD Lite</h3>
+                    <button className="new-note" onClick={props.newNote}>+</button>
+                </div>
+                {noteElements}
+            </section>
+            <button className="clear-notes" onClick={props.clearNotes}>Clear</button>
+        </div>
+
     )
 }

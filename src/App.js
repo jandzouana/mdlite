@@ -33,7 +33,11 @@ export default function App() {
     }
 
     function clearNotes(){
-        setNotes([]);
+        const result = window.confirm("Are you sure you want to delete ALL notes?");
+
+        if (result) {
+            setNotes([]);
+        }
     }
 
     function deleteNote(id, event){
