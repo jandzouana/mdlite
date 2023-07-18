@@ -11,9 +11,27 @@ export default function App() {
         (notes[0] && notes[0].id) || ""
     )
 
+    const [splitSizes, setSplitSizes] = useState(getSplitSizes());
+
+    // console.log("sizes: " + sizes);
+    // console.log("sizes 2" + localStorage.getItem('split-sizes'));
+
     useEffect(()=>{
         localStorage.setItem("notes", JSON.stringify(notes));
     }, [notes])
+
+    function getSplitSizes(){
+        console.log("Getting sizes...");
+
+        let localSizes = localStorage.getItem('split-sizes');
+        if (localSizes) {
+            console.log("Got sizes: " + localSizes);
+            return(JSON.parse(localSizes));
+        }
+        else {
+            return [30, 70] // default sizes
+        }
+    }
 
     function getSavedNotes(){
         const notes = localStorage.getItem("notes");
@@ -91,7 +109,12 @@ export default function App() {
                 notes.length > 0
                     ?
                     <Split
-                        sizes={[30, 70]}
+                        sizes={splitSizes}
+                        onDragEnd={sizes => {
+                            //console.log("Updating sizes: " + sizes);
+                            localStorage.setItem('split-sizes', JSON.stringify(sizes));
+                            setSplitSizes(sizes);
+                        }}
                         minSize={[200, 0]}
                         maxSize={[350, Infinity]}
                         direction="horizontal"

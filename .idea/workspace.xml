@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fe501e52-bf52-4c4c-99aa-1717dee4c7fd" name="Changes" comment="added prompt confirmation for note deletion">
+    <list default="true" id="fe501e52-bf52-4c4c-99aa-1717dee4c7fd" name="Changes" comment="changed css">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Sidebar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,7 +97,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1689626635657</updated>
-      <workItem from="1689626637252" duration="13184000" />
+      <workItem from="1689626637252" duration="14561000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1689628819427</created>
@@ -143,7 +141,14 @@
       <option name="project" value="LOCAL" />
       <updated>1689640098313</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="changed css">
+      <created>1689640993673</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1689640993673</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,6 +172,7 @@
     <MESSAGE value="moving modified note to the top of the notes array" />
     <MESSAGE value="deleting notes" />
     <MESSAGE value="added prompt confirmation for note deletion" />
-    <option name="LAST_COMMIT_MESSAGE" value="added prompt confirmation for note deletion" />
+    <MESSAGE value="changed css" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed css" />
   </component>
 </project>
