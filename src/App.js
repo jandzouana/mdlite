@@ -36,6 +36,18 @@ export default function App() {
         setNotes([]);
     }
 
+    function deleteNote(id, event){
+        console.log("delete: " + id);
+        event.stopPropagation();
+
+        setNotes(notes => {
+            const oldNoteIdx = notes.findIndex(note => note.id === id);
+            let newNotes = [...notes];
+            newNotes.splice(oldNoteIdx, 1);
+            return newNotes;
+        })
+    }
+
     function updateNote(text) {
         // This does not rearrange the notes
         // setNotes(oldNotes => oldNotes.map(oldNote => {
@@ -76,6 +88,7 @@ export default function App() {
                             setCurrentNoteId={setCurrentNoteId}
                             newNote={createNewNote}
                             clearNotes={clearNotes}
+                            deleteNote={deleteNote}
                         />
                         {
                             currentNoteId &&

@@ -149,3 +149,23 @@ button:focus {
     align-items: center;
     background-color: whitesmoke;
 }
+
+.delete-btn {
+    display: none;
+    border: none;
+    margin-right: 7px;
+    border-radius: 15px;
+    box-shadow: #6e6e6e 1px 1px 1px;
+    cursor: pointer;
+    color: white;
+    background-color: #4A4E74;
+}
+
+.selected-delete-btn{
+    color: #4A4E74;
+    background-color: white;
+}
+
+.title:hover > .delete-btn {
+    display: block;
+}
