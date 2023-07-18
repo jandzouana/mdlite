@@ -40,12 +40,23 @@ export default function App() {
         console.log("delete: " + id);
         event.stopPropagation();
 
-        setNotes(notes => {
-            const oldNoteIdx = notes.findIndex(note => note.id === id);
-            let newNotes = [...notes];
-            newNotes.splice(oldNoteIdx, 1);
-            return newNotes;
-        })
+        const result = window.confirm("Delete this note?");
+
+        if (result) {
+            // User clicked "Yes"
+            // Perform actions for "Yes" response
+            console.log("User clicked 'Yes'");
+            setNotes(notes => {
+                const oldNoteIdx = notes.findIndex(note => note.id === id);
+                let newNotes = [...notes];
+                newNotes.splice(oldNoteIdx, 1);
+                return newNotes;
+            })
+        } else {
+            // User clicked "No" or closed the dialog
+            // Perform actions for "No" or cancelled response
+            console.log("User clicked 'No' or cancelled");
+        }
     }
 
     function updateNote(text) {
