@@ -19,6 +19,8 @@ export default function App() {
         notes.find(note => note.id === currentNoteId)
         || notes[0];
 
+    console.log("Current note: ", currentNote);
+
     const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt);
 
     React.useEffect(() => {
@@ -91,9 +93,9 @@ export default function App() {
         }
     }
 
-    async function deleteNote(id){
+    async function deleteNote(id, event){
         console.log("delete: " + id);
-        //event.stopPropagation();
+        event.stopPropagation();
 
         const result = window.confirm("Delete this note?");
 
