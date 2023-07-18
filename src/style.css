@@ -48,8 +48,9 @@ button:focus {
 }
 
 .sidebar--header {
+    padding: 0px 15px 0px 15px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     box-shadow: 0 5px 6px #e5e5e5;
 }
@@ -79,6 +80,7 @@ button:focus {
     height: 50px;
     width: 100%;
     font-family: 'Karla', sans-serif;
+    font-weight: 600;
 }
 
 .first-note {
@@ -179,6 +181,8 @@ button:focus {
     color: white;
     /*background-color: #4A4E74;*/
     background: linear-gradient(45deg, #672280 0%, #A626D3 100%);
+    font-family: 'Karla', sans-serif;
+    font-weight: 600;
 }
 
 .selected-delete-btn{
@@ -191,4 +195,6 @@ button:focus {
 }
 
 #title{
+    font-weight: 700;
+    font-family: 'Karla', sans-serif;
 }
