@@ -20,9 +20,9 @@ export default function Sidebar(props) {
                     note.id === props.currentNote.id ? "selected-note" : ""
                 }`}
                 onClick={() => {
-                    console.log("Clicked on note: ", props.currentNote);
-                    const date = new Date(props.currentNote.updatedAt);
-                    console.log(`With time: ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
+                    // console.log("Clicked on note: ", props.currentNote);
+                    // const date = new Date(props.currentNote.updatedAt);
+                    // console.log(`With time: ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
 
                     props.setCurrentNoteId(note.id);
                 }}

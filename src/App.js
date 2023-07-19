@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect, useRef} from "react"
 import Sidebar from "./components/Sidebar"
 import Editor from "./components/Editor"
 import Split from "react-split"
@@ -12,6 +12,7 @@ export default function App() {
     //console.log("Top");
     const [creatingNote, setCreatingNote] = useState(false);
     const [notes, setNotes] = useState([]);
+    const [tempNoteText, setTempNoteText] = useState([]);
     const [currentNoteId, setCurrentNoteId] = useState(""
     );
     const [splitSizes, setSplitSizes] = useState(getSplitSizes());
@@ -20,15 +21,45 @@ export default function App() {
         notes.find(note => note.id === currentNoteId)
         || notes[0];
 
-    console.log("Current note: ", currentNote);
+    let currentTimer = useRef(null);
+    let prevId = useRef(currentNoteId);
 
     const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt);
 
-    React.useEffect(() => {
+    // Set temp note text when current note changes to display in editor
+    useEffect(() => {
+        if (currentNote) {
+            setTempNoteText(currentNote.body);
+            //console.log("Current note: ", currentNote);
+        }
+    }, [currentNote])
+
+    // See what the current note is every time the user clicks a note
+    useEffect(() => {
+        if (currentNote) {
+            console.log("Current note: ", currentNote);
+        }
+    }, [currentNoteId])
+
+    // Initialize current note id
+    useEffect(() => {
         if (!currentNoteId) {
             setCurrentNoteId(notes[0]?.id)
         }
     }, [notes])
+
+    // Updates current note text upon changes with a .5 second delay
+    useEffect(() => {
+        if(loading) return;
+        const timeoutId = setTimeout(() => {
+            if (tempNoteText !== currentNote?.body) {
+                updateCurrentNote().then(id => console.log("Updated note with id: " + id));
+            }
+        }, 500)
+        return () => clearTimeout(timeoutId)
+    }, [tempNoteText])
+
+    //console.log("Temp: " + tempNoteText);
 
     // Update db in cloud when we make changes to notes
     useEffect(() => {
@@ -115,9 +146,21 @@ export default function App() {
         }
     }
 
-    async function updateNote(text) {
+    function updateNoteText(text) {
+        setTempNoteText(text);
+    }
+
+    function changeCurrentNote(id){
+        // Trigger save of temp text if it has changed
+        // updateCurrentNote().then(id => console.log("Updated note with id: " + id));
+        setCurrentNoteId(id);
+    }
+
+    async function updateCurrentNote() {
+        console.log("Updating note with id: " + currentNoteId);
         const docRef = doc(db, "notes", currentNoteId);
-        await setDoc(docRef, { body :  text, updatedAt: Date.now()}, { merge: true });
+        await setDoc(docRef, { body :  tempNoteText, updatedAt: Date.now()}, { merge: true });
+        return currentNoteId;
     }
 
     return (
@@ -152,15 +195,15 @@ export default function App() {
                         <Sidebar
                             notes={sortedNotes}
                             currentNote={currentNote}
-                            setCurrentNoteId={setCurrentNoteId}
+                            setCurrentNoteId={changeCurrentNote}
                             newNote={createNewNote}
                             deleteNote={deleteNote}
                             clearNotes={clearNotes}
                             addButtonEnabled={!creatingNote}
                         />
                         <Editor
-                            currentNote={currentNote}
-                            updateNote={updateNote}
+                            currentNoteText={tempNoteText}
+                            updateNoteText={updateNoteText}
                         />
                     </Split>
                     :
