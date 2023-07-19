@@ -15,9 +15,7 @@ const SignOut = (props) =>{
     // }, [])
 
     return(
-        <div>
-            <button onClick={handleClick}>Sign Out</button>
-        </div>
+        <button onClick={handleClick} id={"sign-out"}>Sign Out</button>
     )
 }
 

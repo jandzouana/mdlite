@@ -187,8 +187,6 @@ export default function App() {
             <Loader show={loading}/>
             <AuthManager handleUserSignIn={handleUserSignIn} handleSignOut={handleSignOut} handleFetchUser={handleFetchUser}/>
             {!signedIn && <SignIn />}
-            <SignOut/>
-
             {signedIn &&
                 (
                     notes.length > 0

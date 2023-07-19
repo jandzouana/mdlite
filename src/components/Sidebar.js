@@ -1,4 +1,5 @@
 import React from "react"
+import SignOut from "./SignOut";
 
 export default function Sidebar(props) {
     function getNoteSummary(note){
@@ -48,7 +49,10 @@ export default function Sidebar(props) {
                 </div>
                 {noteElements}
             </section>
-            <button className="clear-notes" onClick={props.clearNotes}>Clear</button>
+            <section id={"bottom-buttons"}>
+                <button id="clear-notes" onClick={props.clearNotes}>Clear</button>
+                <SignOut/>
+            </section>
         </div>
 
     )
