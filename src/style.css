@@ -54,6 +54,7 @@ button:focus {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 5px 6px #e5e5e5;
+    width: 100%;
 }
 
 .sidebar--header > h3 {
@@ -327,4 +328,22 @@ button:focus {
     width: 78px;
     align-self: center;
     margin-bottom: 20px;
+}
+
+/* For Webkit-based browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    /*border-radius: 3px;*/
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
 }
