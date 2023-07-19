@@ -148,7 +148,7 @@ button:focus {
 }
 
 .editor {
-    width: 80%;
+    width: 100% !important;
     height: 100vh;
     display: flex;
     justify-content: space-between;
@@ -340,6 +340,7 @@ button:focus {
     width: 78px;
     align-self: center;
     margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 /* For Webkit-based browsers (Chrome, Safari) */

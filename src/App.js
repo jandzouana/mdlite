@@ -239,6 +239,7 @@ export default function App() {
                             maxSize={[350, Infinity]}
                             direction="horizontal"
                             className="split"
+                            snapOffset={0}
                         >
                             <Sidebar
                                 notes={sortedNotes}
