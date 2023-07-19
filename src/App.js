@@ -18,6 +18,7 @@ export default function App() {
     const [tempNoteText, setTempNoteText] = useState([]);
     const [currentNoteId, setCurrentNoteId] = useState(""
     );
+    const [fetchedUserData, setFetchedUserData] = useState(false);
     const [splitSizes, setSplitSizes] = useState(getSplitSizes());
     const [loading, setLoading] = useState(true);
     const [collectionRef, setCollectionRef] = useState(true);
@@ -71,7 +72,7 @@ export default function App() {
             return;
         }
         console.log("Fetching user data...");
-        setLoading(true);
+        //setLoading(true);
         const ref = collection(db, userCol, currentUser.uid, userNotesCol);
         setCollectionRef(ref);
 
@@ -89,9 +90,10 @@ export default function App() {
             }))
             setNotes(notesArr);
             setTimeout(()=>{
+                setFetchedUserData(true);
                 setLoading(false);
             }, 500);
-            //console.log("Update ", notesArr);
+            console.log("Update ", notesArr);
         })
     }, [currentUser])
 
@@ -183,6 +185,8 @@ export default function App() {
 
     function handleSignOut(){
         setCurrentUser(null);
+        // setNotes(null);
+        setFetchedUserData(false);
     }
 
     function handleFetchUser(user){
@@ -208,7 +212,7 @@ export default function App() {
         <main>
             <Loader show={loading}/>
             <AuthManager handleUserSignIn={handleUserSignIn} handleSignOut={handleSignOut} handleFetchUser={handleFetchUser}/>
-            {!currentUser && <SignIn />}
+            {(!currentUser || !fetchedUserData) && <SignIn />}
             {currentUser &&
                 (
                     notes.length > 0

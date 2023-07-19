@@ -289,13 +289,18 @@ button:focus {
     width: 128px;
 }
 
-#spin-loader {
-    width: 40px;
-    height: 40px;
+.spin-loader {
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
+    border-top: 4px solid #A626D3;
     animation: spin 1s infinite linear;
+    display: none;
+}
+
+.spin-show{
+    display: block;
 }
 
 @keyframes spin {

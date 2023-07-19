@@ -1,25 +1,27 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { auth, provider, popup, app, persistence } from '../firebase';
 import logo from '../assets/logo.png';
 
-const SignIn = () =>{
+const SignIn = (props) =>{
+    const [showLoader, setShowLoader] = useState(false);
+    const popupShowing = useRef(false);
+
     function handleClick(){
+        popupShowing.current = true;
+        setShowLoader(true);
         const remember = document.getElementById("remember");
         console.log("Setting persistence: " + remember.checked);
 
-        auth.setPersistence(remember ? persistence : null).then(r => {
-
-        });
-
         popup(auth, provider).then(data => {
-            // setEmail(data.user.email);
-            // localStorage.setItem("email", data.user.email);
-        }).catch(exception => {console.log("Request didn't go through:\n" + exception)})
-    }
+            auth.setPersistence(remember ? persistence : null).then(r => {
 
-    // useEffect(()=>{
-    //     setValue(localStorage.getItem("email"));
-    // }, [])
+            });
+        }).catch(exception => {
+            console.log("Request didn't go through:\n" + exception);
+            if(!popupShowing) setShowLoader(false);
+            popupShowing.current = false;
+        })
+    }
 
     return(
         <div id={"sign-in-container"}>
@@ -31,6 +33,7 @@ const SignIn = () =>{
                     <label htmlFor={"remember"}>Remember me</label>
                 </section>
             </section>
+            <div className={`spin-loader ${showLoader? "spin-show" : ""}`}></div>
         </div>
     )
 }
