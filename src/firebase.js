@@ -22,7 +22,6 @@ export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 export const db = getFirestore(app);
-export const notesCollection = collection(db, "notes");
 export const popup = signInWithPopup;
 export const onAuthStateChange = onAuthStateChanged;
 export const logOut = signOut;

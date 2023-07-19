@@ -5,7 +5,7 @@ import Split from "react-split"
 import "./style.css"
 import favicon from './assets/favicon.ico';
 import { onSnapshot, addDoc, deleteDoc, setDoc, getDocs, doc, collection } from 'firebase/firestore';
-import {notesCollection, db} from './firebase';
+import {db} from './firebase';
 import Loader from './components/Loader';
 import SignIn from "./components/SignIn";
 import SignOut from "./components/SignOut";
@@ -22,12 +22,13 @@ export default function App() {
     );
     const [splitSizes, setSplitSizes] = useState(getSplitSizes());
     const [loading, setLoading] = useState(true);
+    const [collectionRef, setCollectionRef] = useState(true);
     const currentNote =
         notes.find(note => note.id === currentNoteId)
         || notes[0];
 
-    let currentTimer = useRef(null);
-    let prevId = useRef(currentNoteId);
+    const userCol = 'user-data';
+    const userNotesCol = 'userNotes';
 
     const sortedNotes = notes.sort((a, b) => b.updatedAt - a.updatedAt);
 
@@ -73,18 +74,16 @@ export default function App() {
         }
         console.log("Fetching user data...");
         setLoading(true);
+        const ref = collection(db, userCol, currentUser.uid, userNotesCol);
+        setCollectionRef(ref);
 
-        // const collectionRef = db.collection('user-data').doc(currentUser.uid).collection('userNotes');
-        // const collectionRef = collection(collection(db, 'user-data').doc(currentUser.uid), 'userNotes');
-        const collectionRef = collection(db, 'user-data', currentUser.uid, 'userNotes');
-
-        if(!collectionRef){
-            console.log("Return");
+        if(!ref){
+            console.log("Could not get or create collection...");
             return;
         }
-        else console.log(collectionRef);
+        else console.log(ref);
 
-        return onSnapshot(collectionRef, function(snapshot) {
+        return onSnapshot(ref, function(snapshot) {
             // Sync up our local notes array with the snapshot data
             const notesArr = snapshot.docs.map(doc => ({
                 ...doc.data(),
@@ -122,7 +121,6 @@ export default function App() {
             updatedAt: Date.now()
         };
         setCreatingNote(true);
-        const collectionRef = collection(db, 'user-data', currentUser.uid, 'userNotes');
 
         const newNoteRef = await addDoc(collectionRef, newNote);
         // console.log("Wait for 2 seconds...");
@@ -136,7 +134,7 @@ export default function App() {
         const result = window.confirm("Are you sure you want to delete ALL notes?");
 
         if (result) {
-            const querySnapshot = await getDocs(notesCollection);
+            const querySnapshot = await getDocs(collectionRef);
 
             querySnapshot.forEach((doc) => {
                 deleteDoc(doc.ref)
@@ -160,7 +158,7 @@ export default function App() {
             // User clicked "Yes"
             // Perform actions for "Yes" response
             console.log("User clicked 'Yes'");
-            const docRef = doc(db, "notes", id);
+            const docRef = doc(db, userCol, currentUser.uid, userNotesCol, id);
             await deleteDoc(docRef);
         } else {
             // User clicked "No" or closed the dialog
@@ -201,7 +199,7 @@ export default function App() {
     async function updateCurrentNote() {
         console.log("Updating note with id: " + currentNoteId);
 
-        const docRef = doc(db, 'user-data', currentUser.uid, 'userNotes', currentNoteId);
+        const docRef = doc(db, userCol, currentUser.uid, userNotesCol, currentNoteId);
 
         await setDoc(docRef, { body :  tempNoteText, updatedAt: Date.now()}, { merge: true });
         return currentNoteId;

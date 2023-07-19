@@ -69,7 +69,6 @@ button:focus {
     border-radius: 3px;
     height: 30px;
     width: 30px;
-    font-weight: 700;
 }
 
 .disabled{
@@ -113,6 +112,8 @@ button:focus {
     color: white;
     border-radius: 3px;
     padding: 1rem;
+    font-weight: 700;
+    font-family: 'Karla', sans-serif;
 }
 
 .editor {
