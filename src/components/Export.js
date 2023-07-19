@@ -19,7 +19,7 @@ const Export = (props) =>{
     }
 
     function handleClick(){
-        saveStringToFile(text, "md.txt");
+        saveStringToFile(text, "export.md");
     }
 
     return(
