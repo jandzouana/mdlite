@@ -3,9 +3,10 @@ import Sidebar from "./components/Sidebar"
 import Editor from "./components/Editor"
 import Split from "react-split"
 import "./style.css"
-import favicon from './favicon.ico';
+import favicon from './assets/favicon.ico';
 import { onSnapshot, addDoc, deleteDoc, setDoc, getDocs, doc } from 'firebase/firestore';
 import { notesCollection, db } from './firebase';
+import Loader from './components/Loader';
 
 export default function App() {
     //console.log("Top");
@@ -14,7 +15,7 @@ export default function App() {
     const [currentNoteId, setCurrentNoteId] = useState(""
     );
     const [splitSizes, setSplitSizes] = useState(getSplitSizes());
-
+    const [loading, setLoading] = useState(true);
     const currentNote =
         notes.find(note => note.id === currentNoteId)
         || notes[0];
@@ -31,6 +32,7 @@ export default function App() {
 
     // Update db in cloud when we make changes to notes
     useEffect(() => {
+        setLoading(true);
         return onSnapshot(notesCollection, function(snapshot) {
             // Sync up our local notes array with the snapshot data
             const notesArr = snapshot.docs.map(doc => ({
@@ -38,6 +40,7 @@ export default function App() {
                 id: doc.id
             }))
             setNotes(notesArr);
+            setLoading(false);
             //console.log("Update ", notesArr);
         })
     }, [])
@@ -119,6 +122,7 @@ export default function App() {
 
     return (
         <main>
+            <Loader show={loading}/>
             {
                 notes.length > 0
                     ?
