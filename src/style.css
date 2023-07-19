@@ -312,6 +312,19 @@ button:focus {
     width: 128px;
 }
 
+#sign-in{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 5.5px;
+}
+
+#sign-in > img{
+    height: 14px;
+    width: 14px;
+    /*padding-bottom: ;*/
+}
+
 .spin-loader {
     width: 30px;
     height: 30px;
