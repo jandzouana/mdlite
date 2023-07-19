@@ -24,6 +24,8 @@ export default function Editor({ currentNoteText, updateNoteText }) {
                     Promise.resolve(converter.makeHtml(markdown))
                 }
                 minEditorHeight={80}
+                maxEditorHeight={80}
+                minEditor
                 heightUnits="vh"
             />
             <Export text={currentNoteText}/>

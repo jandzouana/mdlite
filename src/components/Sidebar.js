@@ -42,12 +42,12 @@ export default function Sidebar(props) {
 
     return (
         <div className={"sidebar--container"}>
-            <section className="pane sidebar">
+            <section className="sidebar">
                 <div className="sidebar--header">
                     <h3 id={"title"}>MD Lite</h3>
                     <button className={`new-note ${props.addButtonEnabled ? "" : "disabled"}`} disabled={!props.addButtonEnabled} onClick={props.newNote}>+</button>
                 </div>
-                {noteElements}
+                <div className="note-elements-container">{noteElements}</div>
             </section>
             <section id={"bottom-buttons"}>
                 <button id="clear-notes" className={"grey-button"} onClick={props.clearNotes}>Clear</button>
