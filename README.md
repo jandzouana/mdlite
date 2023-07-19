@@ -3,7 +3,7 @@ MD Lite is a user-friendly markdown app that securely stores notes on the cloud,
 
 ![Alt Text](https://github.com/jandzouana/mdlite/blob/release/src/assets/screenshot.png)
 
-# Tech Used
+# Tech Stack
 - HTML
 - CSS
 - Javascript
@@ -11,4 +11,4 @@ MD Lite is a user-friendly markdown app that securely stores notes on the cloud,
 - Firebase
 
 # Demo
-Click [here](jandzouana.github.io/mdlite/) for a demo of this app
+Click [here](https://jandzouana.github.io/mdlite/) for a demo of this app
