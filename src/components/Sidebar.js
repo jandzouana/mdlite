@@ -50,7 +50,7 @@ export default function Sidebar(props) {
                 {noteElements}
             </section>
             <section id={"bottom-buttons"}>
-                <button id="clear-notes" onClick={props.clearNotes}>Clear</button>
+                <button id="clear-notes" className={"grey-button"} onClick={props.clearNotes}>Clear</button>
                 <SignOut/>
             </section>
         </div>

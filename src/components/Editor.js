@@ -1,6 +1,7 @@
 import React from "react"
 import ReactMde from "react-mde"
 import Showdown from "showdown"
+import Export from "./Export.js";
 
 export default function Editor({ currentNoteText, updateNoteText }) {
     const [selectedTab, setSelectedTab] = React.useState("write")
@@ -25,6 +26,7 @@ export default function Editor({ currentNoteText, updateNoteText }) {
                 minEditorHeight={80}
                 heightUnits="vh"
             />
+            <Export text={currentNoteText}/>
         </section>
     )
 }

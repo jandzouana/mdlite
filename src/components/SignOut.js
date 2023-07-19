@@ -11,7 +11,7 @@ const SignOut = (props) =>{
     }
 
     return(
-        <button onClick={handleClick} id={"sign-out"}>Sign Out</button>
+        <button onClick={handleClick} id={"sign-out"} className={"purple-button"}>Sign Out</button>
     )
 }
 

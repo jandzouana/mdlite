@@ -84,10 +84,28 @@ button:focus {
     /*background-color: red;*/
 }
 
-#clear-notes{
-    background: none;
-    color: #672280;
+.grey-button{
+    /*color: #672280;*/
+    color: #3e3e3e;
     background-color: #ececec;
+}
+
+.purple-button{
+    background: linear-gradient(45deg, #672280 0%, #A626D3 100%);
+    color: white;
+}
+
+.button{
+    cursor: pointer;
+    border: none;
+    border-radius: 3px;
+    padding: 1rem;
+    font-weight: 700;
+    font-family: 'Karla', sans-serif;
+}
+
+#clear-notes{
+    /*background: none;*/
     height: 50px;
     width: 100%;
     cursor: pointer;
@@ -119,6 +137,9 @@ button:focus {
 .editor {
     width: 80%;
     height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
 }
 
 .title {
@@ -273,17 +294,6 @@ button:focus {
     height: 80px;
 }
 
-#sign-in{
-    cursor: pointer;
-    background: linear-gradient(45deg, #672280 0%, #A626D3 100%);
-    border: none;
-    color: white;
-    border-radius: 3px;
-    padding: 1rem;
-    font-weight: 700;
-    font-family: 'Karla', sans-serif;
-}
-
 #sign-in-logo{
     height: 128px;
     width: 128px;
@@ -312,3 +322,9 @@ button:focus {
     }
 }
 
+#export{
+    height: 48px;
+    width: 78px;
+    align-self: center;
+    margin-bottom: 20px;
+}

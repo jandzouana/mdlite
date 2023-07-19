@@ -27,7 +27,7 @@ const SignIn = (props) =>{
         <div id={"sign-in-container"}>
             <img id="sign-in-logo" src={logo} alt="logo" />
             <section>
-                <button id={"sign-in"} onClick={handleClick}>Sign in With Google</button>
+                <button id={"sign-in"} className={"button"} onClick={handleClick}>Sign in With Google</button>
                 <section>
                     <input type={"checkbox"} name={"remember"} id={"remember"}/>
                     <label htmlFor={"remember"}>Remember me</label>
