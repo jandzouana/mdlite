@@ -15,7 +15,7 @@ const AuthManager = (props) => {
                 // Perform necessary actions for signed-in user
                 setUser(user);
 
-                handleUserSignIn();
+                handleUserSignIn(user);
             } else {
                 if(fetchedUser.current) {
                     console.log("User logged out");
@@ -26,7 +26,7 @@ const AuthManager = (props) => {
             }
             if(!fetchedUser.current){
                 //console.log("Fetched user");
-                handleFetchUser();
+                handleFetchUser(user);
                 fetchedUser.current = true;
             }
         });

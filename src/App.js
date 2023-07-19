@@ -4,8 +4,8 @@ import Editor from "./components/Editor"
 import Split from "react-split"
 import "./style.css"
 import favicon from './assets/favicon.ico';
-import { onSnapshot, addDoc, deleteDoc, setDoc, getDocs, doc } from 'firebase/firestore';
-import {notesCollection, db, onAuthStateChange, auth} from './firebase';
+import { onSnapshot, addDoc, deleteDoc, setDoc, getDocs, doc, collection } from 'firebase/firestore';
+import {notesCollection, db} from './firebase';
 import Loader from './components/Loader';
 import SignIn from "./components/SignIn";
 import SignOut from "./components/SignOut";
@@ -13,7 +13,8 @@ import AuthManager from "./components/AuthManager";
 
 export default function App() {
     //console.log("Top");
-    const [signedIn, setSignIn] = useState(false);
+    const [signedIn, setSignIn] = useState(false); // TODO: Remove?
+    const [currentUser, setCurrentUser] = useState(null);
     const [creatingNote, setCreatingNote] = useState(false);
     const [notes, setNotes] = useState([]);
     const [tempNoteText, setTempNoteText] = useState([]);
@@ -67,9 +68,23 @@ export default function App() {
 
     // Update db in cloud when we make changes to notes
     useEffect(() => {
-        if(!signedIn) return;
+        if(!currentUser){
+            return;
+        }
+        console.log("Fetching user data...");
         setLoading(true);
-        return onSnapshot(notesCollection, function(snapshot) {
+
+        // const collectionRef = db.collection('user-data').doc(currentUser.uid).collection('userNotes');
+        // const collectionRef = collection(collection(db, 'user-data').doc(currentUser.uid), 'userNotes');
+        const collectionRef = collection(db, 'user-data', currentUser.uid, 'userNotes');
+
+        if(!collectionRef){
+            console.log("Return");
+            return;
+        }
+        else console.log(collectionRef);
+
+        return onSnapshot(collectionRef, function(snapshot) {
             // Sync up our local notes array with the snapshot data
             const notesArr = snapshot.docs.map(doc => ({
                 ...doc.data(),
@@ -79,7 +94,7 @@ export default function App() {
             setLoading(false);
             //console.log("Update ", notesArr);
         })
-    }, [signedIn])
+    }, [currentUser])
 
     // Set favicon
     useEffect(()=>{
@@ -107,7 +122,9 @@ export default function App() {
             updatedAt: Date.now()
         };
         setCreatingNote(true);
-        const newNoteRef = await addDoc(notesCollection, newNote);
+        const collectionRef = collection(db, 'user-data', currentUser.uid, 'userNotes');
+
+        const newNoteRef = await addDoc(collectionRef, newNote);
         // console.log("Wait for 2 seconds...");
         // await new Promise(resolve => setTimeout(resolve, 2000));
         // console.log("Done creating note " + newNoteRef.id);
@@ -164,20 +181,28 @@ export default function App() {
 
     function handleUserSignIn(user){
         setSignIn(true);
+        setCurrentUser(user);
     }
 
     function handleSignOut(){
         setSignIn(false);
+        setCurrentUser(null);
     }
 
-    function handleFetchUser(){
-        console.log("Fetched user");
+    function handleFetchUser(user){
+        console.log("Fetched user", user);
+        if(user){
+            setSignIn(true);
+            setCurrentUser(user);
+        }
         setLoading(false);
     }
 
     async function updateCurrentNote() {
         console.log("Updating note with id: " + currentNoteId);
-        const docRef = doc(db, "notes", currentNoteId);
+
+        const docRef = doc(db, 'user-data', currentUser.uid, 'userNotes', currentNoteId);
+
         await setDoc(docRef, { body :  tempNoteText, updatedAt: Date.now()}, { merge: true });
         return currentNoteId;
     }
