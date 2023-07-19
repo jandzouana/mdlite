@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {auth, onAuthStateChange} from "../firebase";
 
 const AuthManager = (props) => {
     const [user, setUser] = useState();
-    const {handleUserSignIn, handleSignOut} = props;
+    const {handleUserSignIn, handleSignOut, handleFetchUser} = props;
+
+    const fetchedUser = useRef(false);
     // User sign in state
     useEffect(() => {
         const unsubscribe = onAuthStateChange(auth, (user) => {
@@ -15,10 +17,17 @@ const AuthManager = (props) => {
 
                 handleUserSignIn();
             } else {
-                console.log("User logged out");
-                setUser(null);
+                if(fetchedUser.current) {
+                    console.log("User logged out");
+                    setUser(null);
 
-                handleSignOut();
+                    handleSignOut();
+                }
+            }
+            if(!fetchedUser.current){
+                //console.log("Fetched user");
+                handleFetchUser();
+                fetchedUser.current = true;
             }
         });
 

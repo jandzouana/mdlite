@@ -67,6 +67,7 @@ export default function App() {
 
     // Update db in cloud when we make changes to notes
     useEffect(() => {
+        if(!signedIn) return;
         setLoading(true);
         return onSnapshot(notesCollection, function(snapshot) {
             // Sync up our local notes array with the snapshot data
@@ -78,7 +79,7 @@ export default function App() {
             setLoading(false);
             //console.log("Update ", notesArr);
         })
-    }, [])
+    }, [signedIn])
 
     // Set favicon
     useEffect(()=>{
@@ -169,6 +170,11 @@ export default function App() {
         setSignIn(false);
     }
 
+    function handleFetchUser(){
+        console.log("Fetched user");
+        setLoading(false);
+    }
+
     async function updateCurrentNote() {
         console.log("Updating note with id: " + currentNoteId);
         const docRef = doc(db, "notes", currentNoteId);
@@ -178,11 +184,11 @@ export default function App() {
 
     return (
         <main>
-            <AuthManager handleUserSignIn={handleUserSignIn} handleSignOut={handleSignOut}/>
+            <Loader show={loading}/>
+            <AuthManager handleUserSignIn={handleUserSignIn} handleSignOut={handleSignOut} handleFetchUser={handleFetchUser}/>
             {!signedIn && <SignIn />}
             <SignOut/>
 
-            {signedIn && <Loader show={loading}/>}
             {signedIn &&
                 (
                     notes.length > 0
