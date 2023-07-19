@@ -339,8 +339,8 @@ button:focus {
     height: 48px;
     width: 78px;
     align-self: center;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-top: 30px;
 }
 
 /* For Webkit-based browsers (Chrome, Safari) */
