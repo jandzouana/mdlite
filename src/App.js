@@ -5,11 +5,15 @@ import Split from "react-split"
 import "./style.css"
 import favicon from './assets/favicon.ico';
 import { onSnapshot, addDoc, deleteDoc, setDoc, getDocs, doc } from 'firebase/firestore';
-import { notesCollection, db } from './firebase';
+import {notesCollection, db, onAuthStateChange, auth} from './firebase';
 import Loader from './components/Loader';
+import SignIn from "./components/SignIn";
+import SignOut from "./components/SignOut";
+import AuthManager from "./components/AuthManager";
 
 export default function App() {
     //console.log("Top");
+    const [signedIn, setSignIn] = useState(false);
     const [creatingNote, setCreatingNote] = useState(false);
     const [notes, setNotes] = useState([]);
     const [tempNoteText, setTempNoteText] = useState([]);
@@ -80,6 +84,7 @@ export default function App() {
     useEffect(()=>{
         document.getElementById("favicon").href = favicon;
     }, [])
+
 
     function getSplitSizes(){
         //console.log("Getting sizes...");
@@ -156,6 +161,14 @@ export default function App() {
         setCurrentNoteId(id);
     }
 
+    function handleUserSignIn(user){
+        setSignIn(true);
+    }
+
+    function handleSignOut(){
+        setSignIn(false);
+    }
+
     async function updateCurrentNote() {
         console.log("Updating note with id: " + currentNoteId);
         const docRef = doc(db, "notes", currentNoteId);
@@ -165,58 +178,63 @@ export default function App() {
 
     return (
         <main>
-            <Loader show={loading}/>
-            {
-                notes.length > 0
-                    ?
-                    <Split
-                        sizes={splitSizes}
-                        onDragEnd={sizes => {
-                            // const temp = [...sizes];
-                            // temp[0] = temp[0].toFixed(10);
-                            // temp[1] = Math.floor(temp[1]);
+            <AuthManager handleUserSignIn={handleUserSignIn} handleSignOut={handleSignOut}/>
+            {!signedIn && <SignIn />}
+            <SignOut/>
 
-                            if(sizes[0] !== splitSizes[0] || sizes[1] !== splitSizes[1]) {
-                                console.log("Updating sizes: " + sizes);
-                                localStorage.setItem('split-sizes', JSON.stringify(sizes));
+            {signedIn && <Loader show={loading}/>}
+            {signedIn &&
+                (
+                    notes.length > 0
+                        ?
+                        <Split
+                            sizes={splitSizes}
+                            onDragEnd={sizes => {
+                                // const temp = [...sizes];
+                                // temp[0] = temp[0].toFixed(10);
+                                // temp[1] = Math.floor(temp[1]);
 
-                                setSplitSizes(sizes);
+                                if (sizes[0] !== splitSizes[0] || sizes[1] !== splitSizes[1]) {
+                                    console.log("Updating sizes: " + sizes);
+                                    localStorage.setItem('split-sizes', JSON.stringify(sizes));
 
-                                // localStorage.setItem('split-sizes', JSON.stringify([30, 70]));
-                                //
-                                // setSplitSizes([30, 70]);
-                            }
-                        }}
-                        minSize={[200, 0]}
-                        maxSize={[350, Infinity]}
-                        direction="horizontal"
-                        className="split"
-                    >
-                        <Sidebar
-                            notes={sortedNotes}
-                            currentNote={currentNote}
-                            setCurrentNoteId={changeCurrentNote}
-                            newNote={createNewNote}
-                            deleteNote={deleteNote}
-                            clearNotes={clearNotes}
-                            addButtonEnabled={!creatingNote}
-                        />
-                        <Editor
-                            currentNoteText={tempNoteText}
-                            updateNoteText={updateNoteText}
-                        />
-                    </Split>
-                    :
-                    <div className="no-notes">
-                        <h1>You have no notes</h1>
-                        <button
-                            className="first-note"
-                            onClick={createNewNote}
+                                    setSplitSizes(sizes);
+
+                                    // localStorage.setItem('split-sizes', JSON.stringify([30, 70]));
+                                    //
+                                    // setSplitSizes([30, 70]);
+                                }
+                            }}
+                            minSize={[200, 0]}
+                            maxSize={[350, Infinity]}
+                            direction="horizontal"
+                            className="split"
                         >
-                            Create one now
-                        </button>
-                    </div>
-
+                            <Sidebar
+                                notes={sortedNotes}
+                                currentNote={currentNote}
+                                setCurrentNoteId={changeCurrentNote}
+                                newNote={createNewNote}
+                                deleteNote={deleteNote}
+                                clearNotes={clearNotes}
+                                addButtonEnabled={!creatingNote}
+                            />
+                            <Editor
+                                currentNoteText={tempNoteText}
+                                updateNoteText={updateNoteText}
+                            />
+                        </Split>
+                        :
+                        <div className="no-notes">
+                            <h1>You have no notes</h1>
+                            <button
+                                className="first-note"
+                                onClick={createNewNote}
+                            >
+                                Create one now
+                            </button>
+                        </div>
+                    )
             }
         </main>
     )
