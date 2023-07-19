@@ -8,12 +8,10 @@ import { onSnapshot, addDoc, deleteDoc, setDoc, getDocs, doc, collection } from 
 import {db} from './firebase';
 import Loader from './components/Loader';
 import SignIn from "./components/SignIn";
-import SignOut from "./components/SignOut";
 import AuthManager from "./components/AuthManager";
 
 export default function App() {
     //console.log("Top");
-    const [signedIn, setSignIn] = useState(false); // TODO: Remove?
     const [currentUser, setCurrentUser] = useState(null);
     const [creatingNote, setCreatingNote] = useState(false);
     const [notes, setNotes] = useState([]);
@@ -90,7 +88,9 @@ export default function App() {
                 id: doc.id
             }))
             setNotes(notesArr);
-            setLoading(false);
+            setTimeout(()=>{
+                setLoading(false);
+            }, 500);
             //console.log("Update ", notesArr);
         })
     }, [currentUser])
@@ -178,22 +178,21 @@ export default function App() {
     }
 
     function handleUserSignIn(user){
-        setSignIn(true);
         setCurrentUser(user);
     }
 
     function handleSignOut(){
-        setSignIn(false);
         setCurrentUser(null);
     }
 
     function handleFetchUser(user){
         console.log("Fetched user", user);
         if(user){
-            setSignIn(true);
             setCurrentUser(user);
         }
-        setLoading(false);
+        else {
+            setLoading(false);
+        }
     }
 
     async function updateCurrentNote() {
@@ -209,8 +208,8 @@ export default function App() {
         <main>
             <Loader show={loading}/>
             <AuthManager handleUserSignIn={handleUserSignIn} handleSignOut={handleSignOut} handleFetchUser={handleFetchUser}/>
-            {!signedIn && <SignIn />}
-            {signedIn &&
+            {!currentUser && <SignIn />}
+            {currentUser &&
                 (
                     notes.length > 0
                         ?
