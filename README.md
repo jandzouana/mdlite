@@ -9,6 +9,7 @@ MD Lite is a user-friendly markdown app that securely stores notes on the cloud,
 - Javascript
 - React
 - Firebase
+- Webpack
 
 # Demo
 Click [here](https://jandzouana.github.io/mdlite/) for a demo of this app
